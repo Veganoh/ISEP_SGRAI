@@ -70,40 +70,33 @@ export default class Watch extends THREE.Group {
         const radius1 = 0.90 * radius;
         const radius2 = 0.95 * radius; 
 
-        let angle = 0;
-        let increment = 2 * Math.PI / 60;
+        let curve = new THREE.EllipseCurve(0,0,radius0,radius0,0,2 * Math.PI,false,0);
+        let points0 = curve.getPoints(60);
 
+        curve = new THREE.EllipseCurve(0,0,radius1,radius1,0,2 * Math.PI,false,0);
+        let points1 = curve.getPoints(60);
+        
+        curve = new THREE.EllipseCurve(0,0,radius2,radius2,0,2 * Math.PI,false,0);
+        let points2 = curve.getPoints(60);
     
         let points = [];
     
         for(let i = 0; i < 60; i++){
             
-            let x0 = radius0 * Math.cos(angle);
-            let y0 = radius0 * Math.sin(angle);
-
-            let x1 = radius1 * Math.cos(angle);
-            let y1 = radius1 * Math.sin(angle);
-
-            let x2 = radius2 * Math.cos(angle);
-            let y2 = radius2 * Math.sin(angle);
-
             if(i % 5 == 0){
-                points.push(new THREE.Vector2(x2,y2));
-                points.push(new THREE.Vector2(x0,y0));
+                points.push(points0[i]);
             }else{
-                points.push(new THREE.Vector2(x1,y1));
-                points.push(new THREE.Vector2(x2,y2));
+                points.push(points1[i]);
             }
-        
-            geometry = new THREE.BufferGeometry().setFromPoints(points);
-            material = new THREE.LineBasicMaterial(markersColor);
-            this.markers = new THREE.LineSegments(geometry,material);
-            this.add(this.markers);
-            
-            points = [];
-        
-            angle += increment;
+            points.push(points2[i]);
         }
+
+        geometry = new THREE.BufferGeometry().setFromPoints(points);
+        material = new THREE.LineBasicMaterial(markersColor);
+        this.markers = new THREE.LineSegments(geometry,material);
+        this.add(this.markers);
+        
+
 
         /* To-do #3: Create the hour hand (a line segment) with length 0.5 * radius, pointing at 0.0 radians (the positive X-semiaxis) and color handsHMColor */
         points = [];
